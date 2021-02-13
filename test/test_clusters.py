@@ -36,8 +36,8 @@ def test_ligand():
 	assert lig1.bit_string[623] == 1
 	assert lig1.bit_string[650] == 1
 
-def test_partitioning():
+def test_hierarchical():
 	assert True
 
-def test_hierarchical():
+def test_partitioning():
 	assert True
