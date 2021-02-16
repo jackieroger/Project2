@@ -1,5 +1,7 @@
 import numpy as np
 
+### LIGANDS ###
+
 class Ligand():
 	"""
 	Represents a ligand and stores relevant information yielded from docking.
@@ -12,9 +14,9 @@ class Ligand():
 		AutoDock Vina score.
 	smiles : str
 		SMILES string.
-	on_bits : np.array
+	on_bits : np.array of ints
 		The “on” bits in the Extended Connectivity Fingerprint.
-	bit_string : np.array
+	bit_string : np.array of ints
 		The 1024-length bit string of whether or not each bit is "on".
 
 	Parameters
@@ -25,7 +27,7 @@ class Ligand():
 		AutoDock Vina score. Saved as class attribute.
 	smiles : str
 		SMILES string. Saved as class attribute.
-	on_bits : np.array
+	on_bits : np.array of ints
 		The “On” bits in the Extended Connectivity Fingerprint. Saved as class attribute.
 	"""
 
@@ -53,7 +55,7 @@ def load_ligands(ligand_file):
 
 	Returns
 	-------
-	ligands : np.array
+	ligands : np.array of Ligands
 		Ligands.
 	"""
 	# Open up the ligand info file and extract info
@@ -80,31 +82,7 @@ def load_ligands(ligand_file):
 	ligands = np.asarray(ligands)
 	return ligands
 
-class Cluster():
-	"""
-	Represents a cluster by containing an array of ids of the members of the cluster.
-
-	Attributes
-	----------
-	members : np.array
-		Unique ids associated with each member of the cluster.
-	centroid : np.array
-		Cluster centroid. Only created for partition clustering.
-
-	Parameters
-	----------
-	p : bool
-		Flag for whether or not you are using a partitioning algorithm. Default is False.
-	"""
-
-	def __init__(self, p=False):
-		"""
-		Initializes Cluster object, and creates the members array and centroid array (if applicable).
-		"""
-		self.members = np.array([], dtype=int)
-		# If doing partition clustering, create the cluster centroid
-		if p == True:
-			self.centroid = np.array([], dtype=float)
+### CLUSTERING ###
 
 def _calc_jaccard_distance(p1, p2):
 	"""
@@ -112,9 +90,9 @@ def _calc_jaccard_distance(p1, p2):
 
     Parameters
     ----------
-    p1 : np.array
+    p1 : np.array of ints
         A point (represented as an array of values for each coordinate space).
-    p2 : np.array
+    p2 : np.array of ints
         Another point (also represented as an array of values for each dimension/feature).
 
     Returns
@@ -130,6 +108,22 @@ def _calc_jaccard_distance(p1, p2):
 	d = 1 - (i/u)
 	return d
 
+class Cluster():
+	"""
+	Represents a cluster by containing an array of ids of the members of the cluster.
+
+	Attributes
+	----------
+	members : np.array of ints
+		Unique ids associated with each member of the cluster.
+	"""
+
+	def __init__(self):
+		"""
+		Initializes Cluster object, and creates the members array.
+		"""
+		self.members = np.array([], dtype=int)
+
 class HierarchicalClustering():
 	"""
 	Implements hierarchical clustering for an array of coordinates.
@@ -138,7 +132,7 @@ class HierarchicalClustering():
 	----------
 	num_clusters : int
 		Number of clusters.
-	clusters : np.array
+	clusters : np.array of Clusters
 		Clusters generated from doing hierarchical clustering.
 
 	Parameters
@@ -269,11 +263,66 @@ class HierarchicalClustering():
 		dm = self._init_distance_matrix(points)
 		# Do hierarchical clustering
 		c = self._do_hc(c, dm)
+		# Save clusters as a class attribute
 		self.clusters = c
+		# Also return clusters
 		return c
 
+class Centroid():
+	"""
+	Represents a cluster centroid by containing an array of the coordinates for the centroid of the cluster. Used for partition clustering.
+
+	Attributes
+	----------
+	coords : np.array of ints
+		Coordinates of cluster centroid.
+	"""
+
+	def __init__(self):
+		"""
+		Initializes Centroid object, and creates the coordinates array.
+		"""
+		self.coords = np.array([], dtype=int)
+
 class PartitionClustering():
-	pass
+	"""
+	Implements partition clustering for an array of coordinates.
+
+	Attributes
+	----------
+	num_clusters : int
+		Number of clusters.
+	max_iterations : int
+		Maximum number of iterations.
+	clusters : np.array of Clusters
+		Clusters generated from doing hierarchical clustering.
+
+	Parameters
+	----------
+	num_clusters : int
+		Number of clusters. Saved as a class attribute.
+	max_iterations : int
+		Maximum number of iterations. Saved as a class attribute.
+	"""
+
+	def __init__(self, num_clusters, max_iterations):
+		"""
+		Initializes PartitionClustering object, and creates clusters.
+		"""
+		self.num_clusters = num_clusters
+		self.max_iterations = max_iterations
+		self.clusters = np.array([])
+
+
+
+# ligs = load_ligands("ligand_information.csv")
+# lig_subset = ligs[0:5]
+# lig_coords = np.array([l.bit_string for l in lig_subset])
+# hc = HierarchicalClustering(2)
+# clusters = hc.cluster(lig_coords)
+# print([cl.members for cl in clusters])
+
+### EVALUATING CLUSTERS ###
 
 def get_cluster_assignments(self, c):
 	"""
