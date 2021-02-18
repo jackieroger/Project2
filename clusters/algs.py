@@ -348,14 +348,17 @@ class PartitionClustering():
 		centroids = points[np.random.randint(len(points))]
 		# Make an array representing the distance from each point to each centroid
 		# where the rows are points and the columns are centroids. Fill in the
-		# distances for the newly created first centroid
-		cent_dists = np.zeros(shape=(len(points), self.num_clusters), dtype=float)
+		# distances for the newly created first centroid (distances are normalized
+		# by the total distances for each centroid)
+		cent_dists = np.full(shape=(len(points), self.num_clusters), fill_value=np.inf, dtype=float)
 		for i in range(len(points)):
 			cent_dists[i, 0] = self._calc_euclidean_distance(points[i], centroids[0])
 		# Select the rest of the centroids
 		for j in range(1, self.num_clusters):
+			# For each point, find distance to nearest centroid
+			near_dists = np.amin(cent_dists, axis=1)
 			# Pick new centroid
-			new_cent = np.random.choice(range(len(points)), p = cent_dists[:, j-1] / np.sum(cent_dists[:, j-1]))
+			new_cent = np.random.choice(range(len(points)), p = near_dists / np.sum(near_dists))
 			centroids = np.vstack([centroids, points[new_cent]])
 			# Compute distances from each point to the new centroid
 			for i in range(len(points)):
@@ -401,7 +404,16 @@ class PartitionClustering():
 				idx = np.argmin(cent_dists[i, :])
 				c[idx].members = np.append(c[idx].members, i)
 			# Add points to any empty clusters
-			# NEED TO FILL THIS IN
+			# Go through each cluster and if it's empty
+			for j in range(len(c)):
+				if len(c[j].members) == 0:
+					# Then go through the other clusters and pull a point from one of them
+					# if they have more than one member
+					for k in range(len(c)):
+						if len(c[k].members) > 1:
+							c[j].members = np.append(c[j].members, c[k].members[0])
+							c[k].members = np.delete(c[k].members, 0)
+							break
 			# Update centroids
 			old_centroids = centroids
 			centroids = np.zeros(shape=(len(c), len(points[0])), dtype=float)
@@ -456,12 +468,3 @@ def get_cluster_assignments(c):
 		for m in c[i].members:
 			cl_nums[m] = i
 	return cl_nums
-
-ligs = load_ligands("ligand_information.csv")
-lig_subset = ligs[0:50]
-lig_coords = np.array([l.bit_string for l in lig_subset])
-pc = PartitionClustering(5, 100)
-clusters = pc.cluster(lig_coords)
-#print([cl.members for cl in clusters])
-cl_nums = get_cluster_assignments(clusters)
-#print([cl_nums])
