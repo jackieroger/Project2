@@ -84,30 +84,6 @@ def load_ligands(ligand_file):
 
 ### CLUSTERING ###
 
-def _calc_jaccard_distance(p1, p2):
-	"""
-    Private utility function that calculates jaccard distance between 2 points. This is useful for both clustering algorithms.
-
-    Parameters
-    ----------
-    p1 : np.array of ints
-        A point (represented as an array of values for each coordinate space).
-    p2 : np.array of ints
-        Another point (also represented as an array of values for each dimension/feature).
-
-    Returns
-    -------
-    d : float
-        Distance between 2 points calculated using jaccard distance.
-	"""
-	# Jaccard distance is 1-(intersection/union)
-	# Credit: Brenda Miao told me about the numpy bitwise_or and bitwise_and functions
-	# which are useful for fast calculations of jaccard distance
-	i = (p1 & p2).sum()
-	u = (p1 | p2).sum()
-	d = 1 - (i/u)
-	return d
-
 class Cluster():
 	"""
 	Represents a cluster by containing an array of ids of the members of the cluster.
@@ -154,12 +130,12 @@ class HierarchicalClustering():
 
 		Parameters
 		----------
-		points : np.array
+		points : np.array of ints
 			Points to be clustered (each row is a point and each column is a dimension/feature).
 
 		Returns
 		-------
-		c : np.array
+		c : np.array of Clusters
 			Clusters that are initialized such that each point is in its own Cluster.
 		"""
 		# Create c
@@ -169,18 +145,40 @@ class HierarchicalClustering():
 			c[i].members = np.asarray([i])
 		return c
 
+	def _calc_jaccard_distance(self, p1, p2):
+		"""
+		Private helper method for _init_distance_matrix() that calculates jaccard distance between 2 points.
+
+		Parameters
+		----------
+		p1 : np.array of ints
+			A point (represented as an array of values for each dimension/feature).
+		p2 : np.array of ints
+			Another point (also represented as an array of values for each dimension/feature).
+
+		Returns
+		-------
+		d : float
+			Distance between 2 points calculated using jaccard distance.
+		"""
+		# Jaccard distance is 1-(intersection/union)
+		i = (p1 & p2).sum()
+		u = (p1 | p2).sum()
+		d = 1 - (i / u)
+		return d
+
 	def _init_distance_matrix(self, points):
 		"""
 		Private helper method for cluster(). Initializes pairwise distance matrix for points. Only values for the upper righthand triangle are used for clustering.
 
 		Parameters
 		----------
-		points : np.array
+		points : np.array of ints
 			Points to be clustered (each row is a point and each column is a dimension/feature).
 
 		Returns
 		-------
-		dm : np.array
+		dm : np.array of floats
 			Distance matrix that has the pairwise distances between points calculated using
 			jaccard distance.
 		"""
@@ -194,7 +192,7 @@ class HierarchicalClustering():
 				# Calculate distance for each cell in upper right triangle of dm (excluding diagonal)
 				p1 = points[i,]
 				p2 = points[j,]
-				dm[i, j] = _calc_jaccard_distance(p1, p2)
+				dm[i, j] = self._calc_jaccard_distance(p1, p2)
 		return dm
 
 	def _do_hc(self, c, dm):
@@ -203,14 +201,14 @@ class HierarchicalClustering():
 
 		Parameters
 		----------
-		c : np.array
+		c : np.array of Clusters
 			Initialized Clusters (with each point having its own Cluster).
-		dm : np.array
+		dm : np.array of floats
 			Initialized distance matrix to use for clustering.
 
 		Returns
 		-------
-		c : np.array
+		c : np.array of Clusters
 			Finalized Clusters from hierarchical clustering.
 		"""
 		# Set the current number of clusters
@@ -249,12 +247,12 @@ class HierarchicalClustering():
 
 		Parameters
 		----------
-		points : np.array
+		points : np.array of ints
 			Points to be clustered (each row is a point and each column is a dimension/feature).
 
 		Returns
 		-------
-		c : np.array
+		c : np.array of Clusters
 			Clusters yielded from hierarchical clustering of points.
 		"""
 		# Initialize clusters
@@ -313,24 +311,139 @@ class PartitionClustering():
 		self.max_iterations = max_iterations
 		self.clusters = np.array([])
 
+	def _calc_euclidean_distance(self, p1, p2):
+		"""
+		Private helper method for _init_centroids() and _do_pc(). Calculates the euclidean distance between two points.
 
+		Parameters
+		----------
+		p1 : np.array of ints
+			A point (represented as an array of values for each dimension/feature).
+		p2 : np.array of ints
+			Another point (also represented as an array of values for each dimension/feature).
 
-# ligs = load_ligands("ligand_information.csv")
-# lig_subset = ligs[0:5]
-# lig_coords = np.array([l.bit_string for l in lig_subset])
-# hc = HierarchicalClustering(2)
-# clusters = hc.cluster(lig_coords)
-# print([cl.members for cl in clusters])
+		Returns
+		-------
+		d : float
+			Distance between 2 points calculated using euclidean distance.
+		"""
+		d = np.sqrt(np.sum(np.square(p2 - p1)))
+		return d
+
+	def _init_centroids(self, points):
+		"""
+		Initializes centroids using kmeans++ initialization.
+
+		Parameters
+		----------
+		points : np.array of ints
+			Points to be clustered (each row is a point and each column is a dimension/feature).
+
+		Returns
+		-------
+		centroids : np.array of Centroids
+			Centroids yielded from kmeans++ initialization.
+		"""
+		# Randomly select first centroid from points
+		centroids = points[np.random.randint(len(points))]
+		# Make an array representing the distance from each point to each centroid
+		# where the rows are points and the columns are centroids. Fill in the
+		# distances for the newly created first centroid
+		cent_dists = np.zeros(shape=(len(points), self.num_clusters), dtype=float)
+		for i in range(len(points)):
+			cent_dists[i, 0] = self._calc_euclidean_distance(points[i], centroids[0])
+		# Select the rest of the centroids
+		for j in range(1, self.num_clusters):
+			# Pick new centroid
+			new_cent = np.random.choice(range(len(points)), p = cent_dists[:, j-1] / np.sum(cent_dists[:, j-1]))
+			centroids = np.vstack([centroids, points[new_cent]])
+			# Compute distances from each point to the new centroid
+			for i in range(len(points)):
+				cent_dists[i, j] = self._calc_euclidean_distance(points[i], centroids[j])
+		return centroids
+
+	def _do_pc(self, points, centroids):
+		"""
+		Private helper method for cluster(). Do partition clustering to form the specified number of clusters.
+
+		Parameters
+		----------
+		points : np.array of ints
+			Points to be clustered (each row is a point and each column is a dimension/feature).
+		centroids : np.array of Centroids
+			Centroids initialized using kmeans++ initialization.
+
+		Returns
+		-------
+		c : np.array of Clusters
+			Clusters yielded from partition clustering of points.
+		"""
+		# Set counter for number of iterations
+		iter_num = 0
+		# Set boolean for whether a convergence has been reached
+		converged = False
+		# Set boolean for whether there's an empty cluster
+		empty_cluster = False
+		# Initialize empty clusters
+		c = np.array([Cluster() for i in range(len(centroids))])
+		# Do kmeans clustering
+		while iter_num < self.max_iterations and not converged:
+			# Update iteration number
+			iter_num += 1
+			# Calculate distances between each point and each centroid
+			# Rows (i) are points and columns (j) are centroids
+			cent_dists = np.zeros(shape=(len(points), len(centroids)), dtype=float)
+			for j in range(len(centroids)):
+				for i in range(len(points)):
+					cent_dists[i, j] = self._calc_euclidean_distance(points[i], centroids[j])
+			# Update clusters
+			for i in range(len(points)):
+				idx = np.argmin(cent_dists[i, :])
+				c[idx].members = np.append(c[idx].members, i)
+			# Add points to any empty clusters
+			# NEED TO FILL THIS IN
+			# Update centroids
+			old_centroids = centroids
+			centroids = np.zeros(shape=(len(c), len(points[0])), dtype=float)
+			for j in range(len(c)):
+				new_cent = np.sum([points[p] for p in c[j].members], axis=0) / len(c[j].members)
+				centroids[j, :] = new_cent
+			if np.array_equal(old_centroids, centroids):
+				converged = True
+		return c
+
+	def cluster(self, points):
+		"""
+		Clusters a set of points using partition clustering.
+
+		Parameters
+		----------
+		points : np.array of ints
+			Points to be clustered (each row is a point and each column is a dimension/feature).
+
+		Returns
+		-------
+		c : np.array of Clusters
+			Clusters yielded from partition clustering of points.
+		"""
+		# Initialize centroids
+		centroids = self._init_centroids(points)
+		# Do partition clustering
+		c = self._do_pc(points, centroids)
+		# Save clusters as a class attribute
+		self.clusters = c
+		# Also return clusters
+		return c
 
 ### EVALUATING CLUSTERS ###
 
-def get_cluster_assignments(self, c):
+def get_cluster_assignments(c):
 	"""
 	Gets the cluster assignments for points that have already been clustered.
 
 	Parameters
 	----------
-	c : np.array
+	c : np.array of Clusters
 		Array of Clusters.
 
 	Returns
@@ -343,3 +456,12 @@ def get_cluster_assignments(self, c):
 		for m in c[i].members:
 			cl_nums[m] = i
 	return cl_nums
+
+ligs = load_ligands("ligand_information.csv")
+lig_subset = ligs[0:50]
+lig_coords = np.array([l.bit_string for l in lig_subset])
+pc = PartitionClustering(5, 100)
+clusters = pc.cluster(lig_coords)
+#print([cl.members for cl in clusters])
+cl_nums = get_cluster_assignments(clusters)
+#print([cl_nums])

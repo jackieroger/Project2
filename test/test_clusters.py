@@ -36,8 +36,22 @@ def test_ligand():
 	assert lig1.bit_string[623] == 1
 	assert lig1.bit_string[650] == 1
 
+# Test hierarchical clustering
 def test_hierarchical():
-	assert True
+	# Load ligands
+	ligs = algs.load_ligands("test_data/test_ligands.csv")
+	# Do clustering on subset 1
+	lig_subset1 = ligs[0:10]
+	lig_coords1 = np.array([l.bit_string for l in lig_subset1])
+	hc1 = algs.HierarchicalClustering(2)
+	c1 = hc1.cluster(lig_coords1)
+	# Do clustering on subset 2
+	lig_subset2 = ligs[10:20]
+	lig_coords2 = np.array([l.bit_string for l in lig_subset2])
+	hc2 = algs.HierarchicalClustering(3)
+	c2 = hc2.cluster(lig_coords2)
+	# Set true values
 
+# Test partition clustering
 def test_partitioning():
 	assert True
