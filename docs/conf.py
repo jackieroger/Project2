@@ -29,6 +29,9 @@ author = 'Jackie Roger'
 # ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.coverage', 'sphinx.ext.napoleon']
 
+# Include private methods in documentation (for TAs' ease of grading)
+#napoleon_include_private_with_doc = True
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 

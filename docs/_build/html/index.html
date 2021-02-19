@@ -199,7 +199,7 @@
 <dd><p>The “on” bits in the Extended Connectivity Fingerprint.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>np.array</p>
+<dd class="field-odd"><p>np.array of ints</p>
 </dd>
 </dl>
 </dd></dl>
@@ -210,7 +210,7 @@
 <dd><p>The 1024-length bit string of whether or not each bit is “on”.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>np.array</p>
+<dd class="field-odd"><p>np.array of ints</p>
 </dd>
 </dl>
 </dd></dl>
@@ -221,7 +221,7 @@
 <li><p><strong>id</strong> (<em>int</em>) – Identification number. Saved as class attribute.</p></li>
 <li><p><strong>score</strong> (<em>float</em>) – AutoDock Vina score. Saved as class attribute.</p></li>
 <li><p><strong>smiles</strong> (<em>str</em>) – SMILES string. Saved as class attribute.</p></li>
-<li><p><strong>on_bits</strong> (<em>np.array</em>) – The “On” bits in the Extended Connectivity Fingerprint. Saved as class attribute.</p></li>
+<li><p><strong>on_bits</strong> (<em>np.array of ints</em>) – The “On” bits in the Extended Connectivity Fingerprint. Saved as class attribute.</p></li>
 </ul>
 </dd>
 </dl>
@@ -239,14 +239,14 @@
 <dd class="field-even"><p><strong>ligands</strong> – Ligands.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.array</p>
+<dd class="field-odd"><p>np.array of Ligands</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py class">
 <dt id="clusters.algs.Cluster">
-<em class="property">class </em><code class="sig-prename descclassname">clusters.algs.</code><code class="sig-name descname">Cluster</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#clusters.algs.Cluster" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">clusters.algs.</code><code class="sig-name descname">Cluster</code><a class="headerlink" href="#clusters.algs.Cluster" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Represents a cluster by containing an array of ids of the members of the cluster.</p>
 <dl class="py attribute">
@@ -255,27 +255,11 @@
 <dd><p>Unique ids associated with each member of the cluster.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>np.array</p>
+<dd class="field-odd"><p>np.array of ints</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py attribute">
-<dt id="clusters.algs.Cluster.centroid">
-<code class="sig-name descname">centroid</code><a class="headerlink" href="#clusters.algs.Cluster.centroid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Cluster centroid. Only created for partition clustering.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>np.array</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>p</strong> (<em>bool</em>) – Flag for whether or not you are using a partitioning algorithm. Default is False.</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py class">
@@ -300,7 +284,7 @@
 <dd><p>Clusters generated from doing hierarchical clustering.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>np.array</p>
+<dd class="field-odd"><p>np.array of Clusters</p>
 </dd>
 </dl>
 </dd></dl>
@@ -312,17 +296,88 @@
 </dl>
 <dl class="py method">
 <dt id="clusters.algs.HierarchicalClustering.cluster">
-<code class="sig-name descname">cluster</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em><span class="sig-paren">)</span><a class="headerlink" href="#clusters.algs.HierarchicalClustering.cluster" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">cluster</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ids</span></em>, <em class="sig-param"><span class="n">points</span></em><span class="sig-paren">)</span><a class="headerlink" href="#clusters.algs.HierarchicalClustering.cluster" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clusters a set of points using hierarchical clustering.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>points</strong> (<em>np.array</em>) – Points to be clustered (each row is a point and each column is a dimension/feature).</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ids</strong> (<em>np.array of ints</em>) – Id numbers for each point to be clustered.</p></li>
+<li><p><strong>points</strong> (<em>np.array of ints</em>) – Points to be clustered (each row is a point and each column is a dimension/feature).</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>c</strong> – Clusters yielded from hierarchical clustering of points.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.array</p>
+<dd class="field-odd"><p>np.array of Clusters</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="clusters.algs.PartitionClustering">
+<em class="property">class </em><code class="sig-prename descclassname">clusters.algs.</code><code class="sig-name descname">PartitionClustering</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_clusters</span></em>, <em class="sig-param"><span class="n">max_iterations</span></em><span class="sig-paren">)</span><a class="headerlink" href="#clusters.algs.PartitionClustering" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Implements partition clustering for an array of coordinates.</p>
+<dl class="py attribute">
+<dt id="clusters.algs.PartitionClustering.num_clusters">
+<code class="sig-name descname">num_clusters</code><a class="headerlink" href="#clusters.algs.PartitionClustering.num_clusters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of clusters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="clusters.algs.PartitionClustering.max_iterations">
+<code class="sig-name descname">max_iterations</code><a class="headerlink" href="#clusters.algs.PartitionClustering.max_iterations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum number of iterations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="clusters.algs.PartitionClustering.clusters">
+<code class="sig-name descname">clusters</code><a class="headerlink" href="#clusters.algs.PartitionClustering.clusters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clusters generated from doing hierarchical clustering.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.array of Clusters</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_clusters</strong> (<em>int</em>) – Number of clusters. Saved as a class attribute.</p></li>
+<li><p><strong>max_iterations</strong> (<em>int</em>) – Maximum number of iterations. Saved as a class attribute.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="clusters.algs.PartitionClustering.cluster">
+<code class="sig-name descname">cluster</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ids</span></em>, <em class="sig-param"><span class="n">points</span></em><span class="sig-paren">)</span><a class="headerlink" href="#clusters.algs.PartitionClustering.cluster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clusters a set of points using partition clustering.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ids</strong> (<em>np.array of ints</em>) – Id numbers for each point to be clustered.</p></li>
+<li><p><strong>points</strong> (<em>np.array of ints</em>) – Points to be clustered (each row is a point and each column is a dimension/feature).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>c</strong> – Clusters yielded from partition clustering of points.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array of Clusters</p>
 </dd>
 </dl>
 </dd></dl>
@@ -331,11 +386,11 @@
 
 <dl class="py function">
 <dt id="clusters.algs.get_cluster_assignments">
-<code class="sig-prename descclassname">clusters.algs.</code><code class="sig-name descname">get_cluster_assignments</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">c</span></em><span class="sig-paren">)</span><a class="headerlink" href="#clusters.algs.get_cluster_assignments" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">clusters.algs.</code><code class="sig-name descname">get_cluster_assignments</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">c</span></em><span class="sig-paren">)</span><a class="headerlink" href="#clusters.algs.get_cluster_assignments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the cluster assignments for points that have already been clustered.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>c</strong> (<em>np.array</em>) – Array of Clusters.</p>
+<dd class="field-odd"><p><strong>c</strong> (<em>np.array of Clusters</em>) – Array of Clusters.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>cl_nums</strong> – Cluster assignments for each point (each key is a point and each value is its cluster assignment).</p>
