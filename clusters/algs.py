@@ -102,7 +102,7 @@ class Cluster():
 
 def calc_jaccard_distance(p1, p2):
 	"""
-	Calculates jaccard distance between 2 points.
+	Calculates jaccard distance between 2 points. Jaccard distance = 1 - jaccard index, where jaccard index = intersection / union.
 
 	Parameters
 	----------
@@ -131,7 +131,7 @@ def calc_jaccard_distance(p1, p2):
 
 def calc_euclidean_distance(p1, p2):
 	"""
-	Calculates the euclidean distance between two points.
+	Calculates the euclidean distance between two points. Euclidean distance = sqrt(sum(squared distance)).
 
 	Parameters
 	----------
@@ -150,7 +150,7 @@ def calc_euclidean_distance(p1, p2):
 
 class HierarchicalClustering():
 	"""
-	Implements hierarchical clustering for an array of coordinates.
+	Implements hierarchical clustering for an array of coordinates. Hierarchical clustering involves taking a set of points, assigning each to its own cluster, and then iteratively combining clusters using pairwise distances until a specified number of clusters is reached.
 
 	Attributes
 	----------
@@ -299,7 +299,7 @@ class HierarchicalClustering():
 
 class PartitionClustering():
 	"""
-	Implements partition clustering for an array of coordinates.
+	Implements partition clustering for an array of coordinates. This implementation of partition clustering is kmeans with kmeans++ initialization. It involves taking a set of points, initializing semi-random clusters, and iteratively updating clusters until convergence (or max iterations) is reached.
 
 	Attributes
 	----------
@@ -457,7 +457,7 @@ class PartitionClustering():
 
 def get_cluster_assignments(c):
 	"""
-	Gets the cluster assignments for points that have already been clustered.
+	Gets the cluster assignments for points that have already been clustered. After clustering has been performed, this is useful for analysis involving iterating through points, instead of iterating through clusters.
 
 	Parameters
 	----------
@@ -477,7 +477,7 @@ def get_cluster_assignments(c):
 
 def compute_silhouette_score(c, points, dist_fun=calc_jaccard_distance):
 	"""
-	Computes the silhouette score for a clustering. This is a quality metric.
+	Computes the silhouette score for a clustering. This is a quality metric that compares intra-cluster distances to inter-cluster distances. Higher values for silhouette score indicate higher quality clusterings.
 
 	Parameters
 	----------
@@ -544,7 +544,7 @@ def compute_silhouette_score(c, points, dist_fun=calc_jaccard_distance):
 
 def compute_jaccard_index(c1, c2):
 	"""
-	Computes the jaccard index between two clusterings. This is a metric for comparing clustering similarity.
+	Computes the jaccard index between two clusterings. This is a metric for comparing clustering similarity that computes the frequency that two points are clustered in the same cluster vs in different clusters. Higher values indicate more similar clusterings.
 
 	Parameters
 	----------
@@ -583,7 +583,7 @@ def compute_jaccard_index(c1, c2):
 
 def update_member_ids(ids, clusters):
 	"""
-	For cluster members, replace the point number with the id number. Also sort cluster members (purely for aesthetics).
+	For cluster members, replace the point number with the id number. Also sort cluster members (purely for aesthetics). This is useful if the points have specific ids associated with them (such as ligand ids) and we want to analyze clustering information in conjunction with other information about the points that are associated with their ids.
 
 	Parameters
 	----------

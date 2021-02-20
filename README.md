@@ -7,7 +7,7 @@ This API evaluates results from a high-throughput virtual screen against the SAR
 
 Documentation (via Sphinx) can be found at docs/_build/html/index.html.
 
-My answers for part 2 are in Jackie_Roger_BMI203_HW2.ipynb.
+My answers for part 2 are in Jackie_Roger_BMI203_HW2.ipynb. Screenshots from the pymol adventure are located in part2_plots/question_10/.
 
 To run unit tests, run the following command from the project root directory:
 ```
