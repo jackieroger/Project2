@@ -102,7 +102,7 @@ class Cluster():
 
 def calc_jaccard_distance(p1, p2):
 	"""
-	Calculates jaccard distance between 2 points. Jaccard distance = 1 - jaccard index, where jaccard index = intersection / union.
+	Calculates jaccard distance between 2 points. Jaccard distance = 1 - (intersection / union).
 
 	Parameters
 	----------
