@@ -1,0 +1,3 @@
+#!/Users/jroger/Documents/UCSF/classes/bmi_203/Project2/venv/bin/python
+from numba.pycc import main
+main()

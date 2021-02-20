@@ -250,7 +250,7 @@ class HierarchicalClustering():
 			min_dist_loc = np.unravel_index(np.argmin(dm, axis=None), dm.shape)
 			i = min_dist_loc[0]
 			j = min_dist_loc[1]
-			# Combine clusters by pulling out members of each, deleting original cluster,
+			# Combine clusters by pulling out members of each, deleting original clusters,
 			# and appending a new one with members from both
 			mem_i = c[i].members
 			mem_j = c[j].members
@@ -259,8 +259,8 @@ class HierarchicalClustering():
 			c[-1].members = np.concatenate((mem_i, mem_j))
 			# Update dm
 			# Add a new col
-			dm = np.append(dm, np.ones((1, len(dm))), axis=0)
-			dm = np.append(dm, np.ones((len(dm), 1)), axis=1)
+			dm = np.append(dm, np.full(shape=(1, len(dm)), fill_value=np.inf), axis=0)
+			dm = np.append(dm, np.full(shape=(len(dm), 1), fill_value=np.inf), axis=1)
 			# Update new column (using single linkage)
 			for x in range(len(dm)-1):
 				options = [dm[x,i], dm[x,j], dm[i,x], dm[j,x]]
@@ -492,8 +492,6 @@ def compute_silhouette_score(c, points, dist_fun=calc_jaccard_distance):
 	-------
 	clustering_score : float
 		Overall silhouette score for clustering.
-	scores : dict
-		Silhouette scores for each individual point, where keys are point ids and values are scores.
 	"""
 	# Create distance matrix up front to speed up calculations later
 	point_dists = np.zeros(shape=(len(points), len(points)), dtype=float)
@@ -541,8 +539,8 @@ def compute_silhouette_score(c, points, dist_fun=calc_jaccard_distance):
 			scores[m] = s
 	# Compute mean score
 	clustering_score = sum(scores.values()) / len(scores)
-	# Return score (for clustering) and scores dict (for all points)
-	return clustering_score, scores
+	# Return clustering silhouette score
+	return clustering_score
 
 def compute_jaccard_index(c1, c2):
 	"""

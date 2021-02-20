@@ -152,11 +152,11 @@ def test_silhouette_score():
 	hc = algs.HierarchicalClustering(2)
 	c = hc.cluster(lig_coords)
 	# Compute silhouette score
-	cs, s = algs.compute_silhouette_score(c, lig_coords)
+	s = algs.compute_silhouette_score(c, lig_coords)
 	# Set true value
-	true_cs = float(0.11641284288871127)
+	true_s = float(0.11641284288871127)
 	# Check that they match
-	assert cs == true_cs
+	assert s == true_s
 
 # Test computing jaccard index (for clustering similarity)
 def test_jaccard_index():
