@@ -262,11 +262,51 @@
 
 </dd></dl>
 
+<dl class="py function">
+<dt id="clusters.algs.calc_jaccard_distance">
+<code class="sig-prename descclassname">clusters.algs.</code><code class="sig-name descname">calc_jaccard_distance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p1</span></em>, <em class="sig-param"><span class="n">p2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#clusters.algs.calc_jaccard_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates jaccard distance between 2 points. Jaccard distance = 1 - jaccard index, where jaccard index = intersection / union.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p1</strong> (<em>np.array of ints</em>) – A point (represented as an array of values for each dimension/feature).</p></li>
+<li><p><strong>p2</strong> (<em>np.array of ints</em>) – Another point (also represented as an array of values for each dimension/feature).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>d</strong> – Distance between 2 points calculated using jaccard distance.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="clusters.algs.calc_euclidean_distance">
+<code class="sig-prename descclassname">clusters.algs.</code><code class="sig-name descname">calc_euclidean_distance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p1</span></em>, <em class="sig-param"><span class="n">p2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#clusters.algs.calc_euclidean_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the euclidean distance between two points. Euclidean distance = sqrt(sum(squared distance)).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p1</strong> (<em>np.array of ints</em>) – A point (represented as an array of values for each dimension/feature).</p></li>
+<li><p><strong>p2</strong> (<em>np.array of ints</em>) – Another point (also represented as an array of values for each dimension/feature).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>d</strong> – Distance between 2 points calculated using euclidean distance.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py class">
 <dt id="clusters.algs.HierarchicalClustering">
-<em class="property">class </em><code class="sig-prename descclassname">clusters.algs.</code><code class="sig-name descname">HierarchicalClustering</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_clusters</span></em><span class="sig-paren">)</span><a class="headerlink" href="#clusters.algs.HierarchicalClustering" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">clusters.algs.</code><code class="sig-name descname">HierarchicalClustering</code><span class="sig-paren">(</span><em class="sig-param">num_clusters</em>, <em class="sig-param">dist_fun=&lt;function calc_jaccard_distance&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#clusters.algs.HierarchicalClustering" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Implements hierarchical clustering for an array of coordinates.</p>
+<p>Implements hierarchical clustering for an array of coordinates. Hierarchical clustering involves taking a set of points, assigning each to its own cluster, and then iteratively combining clusters using pairwise distances until a specified number of clusters is reached.</p>
 <dl class="py attribute">
 <dt id="clusters.algs.HierarchicalClustering.num_clusters">
 <code class="sig-name descname">num_clusters</code><a class="headerlink" href="#clusters.algs.HierarchicalClustering.num_clusters" title="Permalink to this definition">¶</a></dt>
@@ -274,6 +314,17 @@
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="clusters.algs.HierarchicalClustering.dist_fun">
+<code class="sig-name descname">dist_fun</code><a class="headerlink" href="#clusters.algs.HierarchicalClustering.dist_fun" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function used to calculate distance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>function</p>
 </dd>
 </dl>
 </dd></dl>
@@ -291,19 +342,19 @@
 
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>num_clusters</strong> (<em>int</em>) – Number of clusters. Saved as a class attribute.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_clusters</strong> (<em>int</em>) – Number of clusters. Saved as a class attribute.</p></li>
+<li><p><strong>dist_fun</strong> (<em>function</em>) – Function used to calculate distance. Optional parameter. Default is jaccard distance. Saved as a class attribute.</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="py method">
 <dt id="clusters.algs.HierarchicalClustering.cluster">
-<code class="sig-name descname">cluster</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ids</span></em>, <em class="sig-param"><span class="n">points</span></em><span class="sig-paren">)</span><a class="headerlink" href="#clusters.algs.HierarchicalClustering.cluster" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">cluster</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em><span class="sig-paren">)</span><a class="headerlink" href="#clusters.algs.HierarchicalClustering.cluster" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clusters a set of points using hierarchical clustering.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ids</strong> (<em>np.array of ints</em>) – Id numbers for each point to be clustered.</p></li>
-<li><p><strong>points</strong> (<em>np.array of ints</em>) – Points to be clustered (each row is a point and each column is a dimension/feature).</p></li>
-</ul>
+<dd class="field-odd"><p><strong>points</strong> (<em>np.array of ints</em>) – Points to be clustered (each row is a point and each column is a dimension/feature).</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>c</strong> – Clusters yielded from hierarchical clustering of points.</p>
@@ -318,9 +369,9 @@
 
 <dl class="py class">
 <dt id="clusters.algs.PartitionClustering">
-<em class="property">class </em><code class="sig-prename descclassname">clusters.algs.</code><code class="sig-name descname">PartitionClustering</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_clusters</span></em>, <em class="sig-param"><span class="n">max_iterations</span></em><span class="sig-paren">)</span><a class="headerlink" href="#clusters.algs.PartitionClustering" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">clusters.algs.</code><code class="sig-name descname">PartitionClustering</code><span class="sig-paren">(</span><em class="sig-param">num_clusters</em>, <em class="sig-param">max_iterations=100</em>, <em class="sig-param">dist_fun=&lt;function calc_euclidean_distance&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#clusters.algs.PartitionClustering" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Implements partition clustering for an array of coordinates.</p>
+<p>Implements partition clustering for an array of coordinates. This implementation of partition clustering is kmeans with kmeans++ initialization. It involves taking a set of points, initializing semi-random clusters, and iteratively updating clusters until convergence (or max iterations) is reached.</p>
 <dl class="py attribute">
 <dt id="clusters.algs.PartitionClustering.num_clusters">
 <code class="sig-name descname">num_clusters</code><a class="headerlink" href="#clusters.algs.PartitionClustering.num_clusters" title="Permalink to this definition">¶</a></dt>
@@ -344,6 +395,17 @@
 </dd></dl>
 
 <dl class="py attribute">
+<dt id="clusters.algs.PartitionClustering.dist_fun">
+<code class="sig-name descname">dist_fun</code><a class="headerlink" href="#clusters.algs.PartitionClustering.dist_fun" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function used to calculate distance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
 <dt id="clusters.algs.PartitionClustering.clusters">
 <code class="sig-name descname">clusters</code><a class="headerlink" href="#clusters.algs.PartitionClustering.clusters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clusters generated from doing hierarchical clustering.</p>
@@ -358,20 +420,18 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>num_clusters</strong> (<em>int</em>) – Number of clusters. Saved as a class attribute.</p></li>
-<li><p><strong>max_iterations</strong> (<em>int</em>) – Maximum number of iterations. Saved as a class attribute.</p></li>
+<li><p><strong>max_iterations</strong> (<em>int</em>) – Maximum number of iterations. Optional parameter. Default is 100. Saved as a class attribute.</p></li>
+<li><p><strong>dist_fun</strong> (<em>function</em>) – Function used to calculate distance. Optional parameter. Default is euclidean distance. Saved as a class attribute.</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py method">
 <dt id="clusters.algs.PartitionClustering.cluster">
-<code class="sig-name descname">cluster</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ids</span></em>, <em class="sig-param"><span class="n">points</span></em><span class="sig-paren">)</span><a class="headerlink" href="#clusters.algs.PartitionClustering.cluster" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">cluster</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em><span class="sig-paren">)</span><a class="headerlink" href="#clusters.algs.PartitionClustering.cluster" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clusters a set of points using partition clustering.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ids</strong> (<em>np.array of ints</em>) – Id numbers for each point to be clustered.</p></li>
-<li><p><strong>points</strong> (<em>np.array of ints</em>) – Points to be clustered (each row is a point and each column is a dimension/feature).</p></li>
-</ul>
+<dd class="field-odd"><p><strong>points</strong> (<em>np.array of ints</em>) – Points to be clustered (each row is a point and each column is a dimension/feature).</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>c</strong> – Clusters yielded from partition clustering of points.</p>
@@ -387,7 +447,7 @@
 <dl class="py function">
 <dt id="clusters.algs.get_cluster_assignments">
 <code class="sig-prename descclassname">clusters.algs.</code><code class="sig-name descname">get_cluster_assignments</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">c</span></em><span class="sig-paren">)</span><a class="headerlink" href="#clusters.algs.get_cluster_assignments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the cluster assignments for points that have already been clustered.</p>
+<dd><p>Gets the cluster assignments for points that have already been clustered. After clustering has been performed, this is useful for analysis involving iterating through points, instead of iterating through clusters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>c</strong> (<em>np.array of Clusters</em>) – Array of Clusters.</p>
@@ -397,6 +457,67 @@
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="clusters.algs.compute_silhouette_score">
+<code class="sig-prename descclassname">clusters.algs.</code><code class="sig-name descname">compute_silhouette_score</code><span class="sig-paren">(</span><em class="sig-param">c</em>, <em class="sig-param">points</em>, <em class="sig-param">dist_fun=&lt;function calc_jaccard_distance&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#clusters.algs.compute_silhouette_score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the silhouette score for a clustering. This is a quality metric that compares intra-cluster distances to inter-cluster distances. Higher values for silhouette score indicate higher quality clusterings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>c</strong> (<em>np.array of Clusters</em>) – Clusters to be evaluated.</p></li>
+<li><p><strong>points</strong> (<em>np.array of ints</em>) – Coordinates of points that were clustered.</p></li>
+<li><p><strong>dist_fun</strong> (<em>function</em>) – Function used to calculate distance. Optional parameter. Default is jaccard distance.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>clustering_score</strong> – Overall silhouette score for clustering.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="clusters.algs.compute_jaccard_index">
+<code class="sig-prename descclassname">clusters.algs.</code><code class="sig-name descname">compute_jaccard_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">c1</span></em>, <em class="sig-param"><span class="n">c2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#clusters.algs.compute_jaccard_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the jaccard index between two clusterings. This is a metric for comparing clustering similarity that computes the frequency that two points are clustered in the same cluster vs in different clusters. Higher values indicate more similar clusterings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>c1</strong> (<em>np.array of Clusters</em>) – First clustering.</p></li>
+<li><p><strong>c2</strong> (<em>np.array of Clusters</em>) – Second clustering.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ji</strong> – Jaccard index for the two clusterings.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="clusters.algs.update_member_ids">
+<code class="sig-prename descclassname">clusters.algs.</code><code class="sig-name descname">update_member_ids</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ids</span></em>, <em class="sig-param"><span class="n">clusters</span></em><span class="sig-paren">)</span><a class="headerlink" href="#clusters.algs.update_member_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>For cluster members, replace the point number with the id number. Also sort cluster members (purely for aesthetics). This is useful if the points have specific ids associated with them (such as ligand ids) and we want to analyze clustering information in conjunction with other information about the points that are associated with their ids.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ids</strong> (<em>np.array of ints</em>) – Id numbers for each point.</p></li>
+<li><p><strong>clusters</strong> (<em>np.array of Clusters</em>) – Clusters yielded from hierarchical or partition clustering.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>c</strong> – Clusters with the members containing the original id numbers in sorted order.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array of Clusters</p>
 </dd>
 </dl>
 </dd></dl>
